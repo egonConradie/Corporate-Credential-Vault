@@ -6,7 +6,7 @@ const Division = require("../models/Division");
 const Credential = require("../models/Credential");
 const { verifyToken, checkRole } = require("../middleware/authMiddleware");
 
-// --- AUTHENTICATION (Task 1) ---
+// --- AUTHENTICATION (T1) ---
 
 // Register
 router.post("/register", async (req, res) => {
@@ -109,9 +109,9 @@ router.put(
   },
 );
 
-// --- ADMIN & DATA (Task 3) ---
+// --- ADMIN & DATA (T3.) ---
 
-// Get All Divisions (For UI)
+// Get Divisions (For UI)
 router.get("/divisions", verifyToken, async (req, res) => {
   const divisions = await Division.find();
   res.json(divisions);
@@ -149,7 +149,7 @@ router.put("/role", verifyToken, checkRole(["admin"]), async (req, res) => {
   }
 });
 
-// SEED ROUTE (To create sample OUs/Divisions quickly)
+// SEED ROUTE (Create Divisions quickly)
 router.post("/seed", async (req, res) => {
   const OUs = [
     "News Management",
