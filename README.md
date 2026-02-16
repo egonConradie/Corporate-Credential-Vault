@@ -1,6 +1,6 @@
 # 🛡️ Cool Tech Credential Vault
 
-A secure, internal web application designed for **Cool Tech** to manage login credentials across various departments. Built using the **MERN Stack** (MongoDB, Express, React, Node.js), this application features robust authentication and Role-Based Access Control (RBAC).
+A secure, internal web application designed for **Cool Tech** to manage login credentials across various departments. Built using the **MERN Stack** (MongoDB, Express, React, Node.js), this application features robust authentication and Role-Based Access Control 
 
 ## 🚀 Features
 
