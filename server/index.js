@@ -9,16 +9,20 @@ const adminRoutes = require("./routes/admin");
 
 const app = express();
 
-// Middleware
+// ===== MIDDLEWARE =====
+// allow cross origin requests
 app.use(cors());
+
+// parse JSON body automatically
 app.use(express.json());
 
-// Routes
-app.use("/api/auth", authRoutes);
-app.use("/api/credentials", credentialRoutes);
-app.use("/api/admin", adminRoutes);
+// ===== ROUTES =====
+app.use("/api/auth", authRoutes); // login/register stuff
+app.use("/api/credentials", credentialRoutes); // CRUD credentials
+app.use("/api/admin", adminRoutes); // admin actions
 
-// Seed endpoint for initial data
+// ===== SEED ENDPOINT =====
+// just for initial testing/data setup
 app.post("/api/seed", async (req, res) => {
   try {
     const OU = require("./models/OU");
@@ -26,11 +30,11 @@ app.post("/api/seed", async (req, res) => {
     const User = require("./models/User");
     const bcrypt = require("bcrypt");
 
-    // Create OUs
+    // create some OUs (if not exist already)
     const newsManagement = await OU.findOneAndUpdate(
       { name: "News Management" },
       { name: "News Management", description: "Manages news content" },
-      { upsert: true, new: true },
+      { upsert: true, new: true }, // create if not exist
     );
 
     const softwareReviews = await OU.findOneAndUpdate(
@@ -51,7 +55,7 @@ app.post("/api/seed", async (req, res) => {
       { upsert: true, new: true },
     );
 
-    // Create Divisions
+    // create divisions and link to OUs
     const divisions = [
       { name: "Finance", ou: newsManagement._id },
       { name: "IT", ou: newsManagement._id },
@@ -65,13 +69,16 @@ app.post("/api/seed", async (req, res) => {
     ];
 
     for (const div of divisions) {
+      // create division if not exist
       await Division.findOneAndUpdate({ name: div.name, ou: div.ou }, div, {
         upsert: true,
       });
     }
 
-    // Create admin user
+    // create admin user (password hashed)
     const hashedPassword = await bcrypt.hash("admin123", 10);
+
+    // get all divisions for admin to belong to
     const allDivisions = await Division.find();
 
     await User.findOneAndUpdate(
@@ -94,11 +101,13 @@ app.post("/api/seed", async (req, res) => {
   }
 });
 
-// Connect to MongoDB
+// ===== CONNECT TO MONGO =====
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("Connected to MongoDB");
+
+    // start express server after db connection
     app.listen(process.env.PORT, () => {
       console.log(`Server running on port ${process.env.PORT}`);
     });
